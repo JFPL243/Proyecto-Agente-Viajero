@@ -54,7 +54,7 @@ public class PanelGrafo extends JPanel {
 
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                if (timerAnimacion != null) timerAnimacion.stop();
+                
                 dragStartX = e.getX();
                 dragStartY = e.getY();
                 dragging = false;

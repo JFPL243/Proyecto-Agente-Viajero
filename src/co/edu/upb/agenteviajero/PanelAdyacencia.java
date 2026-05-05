@@ -166,9 +166,9 @@ public class PanelAdyacencia extends JPanel {
         };
 
         tabla = new JTable(modeloTabla);
-        tabla.setFont(new Font("Arial", Font.PLAIN, 12));
+        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         tabla.setRowHeight(28);
-        tabla.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabla.getTableHeader().setBackground(new Color(70, 130, 180));
         tabla.getTableHeader().setForeground(Color.WHITE);
         tabla.setSelectionBackground(new Color(200, 220, 255));
@@ -218,10 +218,10 @@ public class PanelAdyacencia extends JPanel {
         if(dy == 0 && dx < 0) return "Izquierda ←";
         if(dx == 0 && dy > 0) return "Abajo ↓";
         if(dx == 0 && dy < 0) return "Arriba ↑";
-        if(dx > 0 && dy > 0) return "Diagonal ↘";
-        if(dx < 0 && dy > 0) return "Diagonal ↙";
-        if(dx > 0 && dy < 0) return "Diagonal ↗";
-        if(dx < 0 && dy < 0) return "Diagonal ↖";
+        if(dx > 0 && dy > 0) return "Diagonal abajo-der";
+        if(dx < 0 && dy > 0) return "Diagonal abajo-izq";
+        if(dx > 0 && dy < 0) return "Diagonal arriba-der";
+        if(dx < 0 && dy < 0) return "Diagonal arriba-izq";
         return "?";
     }
 }

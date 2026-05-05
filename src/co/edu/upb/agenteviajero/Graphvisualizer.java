@@ -36,13 +36,11 @@ public class Graphvisualizer extends JFrame{
 	    tabs.addTab("Kruskal",  panelKruskal);
 	    tabs.addTab("Matriz", panelMatriz);
 
-	    JButton btnDijkstra = crearBoton("▶ Dijkstra", new Color(34, 150, 80));
-	    JButton btnKruskal  = crearBoton("▶ Kruskal",  new Color(130, 40, 180));
-	    JButton btnZoomIn  = crearBoton("+", new Color(60, 120, 180));
-	    JButton btnZoomOut = crearBoton("-", new Color(60, 120, 180));
+	    JButton btnDijkstra = crearBoton("Dijkstra", new Color(34, 150, 80));
+	    JButton btnKruskal  = crearBoton("Kruskal",  new Color(130, 40, 180));
 	    
-	    btnZoomIn.addActionListener(e  -> panelGrafo.zoomIn());
-	    btnZoomOut.addActionListener(e -> panelGrafo.zoomOut());
+	    
+	    
 	    btnDijkstra.addActionListener(e -> panelGrafo.ejecutarDijkstra(panelDijkstra));
 	    btnKruskal.addActionListener(e  -> panelGrafo.ejecutarKruskal(panelKruskal));
 
@@ -51,8 +49,7 @@ public class Graphvisualizer extends JFrame{
 	    barra.setBackground(new Color(240, 240, 245));
 	    barra.add(btnDijkstra);
 	    barra.add(btnKruskal);
-	    barra.add(btnZoomIn);
-	    barra.add(btnZoomOut);
+	    
 	    
 	    JLabel lblEstado = new JLabel("Origen: C9  |  Selecciona destino con ▶ Dijkstra");
 	    lblEstado.setFont(new Font("Arial", Font.PLAIN, 12));
