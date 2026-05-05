@@ -26,7 +26,7 @@ public class Graphvisualizer extends JFrame{
 	    PanelGrafo   panelGrafo    = new PanelGrafo(grafo);
 	    PanelTabla   panelDijkstra = new PanelTabla();
 	    PanelKruskal panelKruskal  = new PanelKruskal();
-	    PanelAdyacencia panelMatriz = new PanelAdyacencia();
+	    PanelAdyacencia panelMatriz = new PanelAdyacencia(grafo);
 	    
 	    
 
