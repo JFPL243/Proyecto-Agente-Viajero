@@ -4,8 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class PanelGrafo extends JPanel {
     private Grafo grafo;
@@ -13,10 +15,8 @@ public class PanelGrafo extends JPanel {
     private static final int RADIO = 24;
 
     private List<Nodo>   caminoDijkstra  = null;
-    private List<Nodo>   ordenRecorrido  = null;
     private List<Arista> aristasKruskal  = null;
     private int          aristasAnimadas = 0;
-    private int          nodoAnimado     = -1;
     private int          distanciaTotal  = 0;
     private String       modoActual      = "";
 
@@ -28,7 +28,25 @@ public class PanelGrafo extends JPanel {
     private final String origenId = "B9";
     private final List<String> destinosId = Arrays.asList(
     "A1","A17","E1","F16","I1","K10","K14","M16","N6","O16","P9","R2","R8","R13"
+
+    
 );
+    private final Map<String, String> nombresCiudades = new HashMap<String, String>() {{
+        put("A1",  "Cartagena");
+        put("A17", "Valledupar");
+        put("E1",  "Sincelejo");
+        put("F16", "Cúcuta");
+        put("I1",  "Montería");
+        put("K10", "Bucaramanga");
+        put("K14", "Arauca");
+        put("M16", "Puerto Carreño");
+        put("N6",  "Medellín");
+        put("O16", "Puerto Inírida");
+        put("P9",  "Bogotá");
+        put("R2",  "Cali");
+        put("R8",  "Neiva");
+        put("R13", "Villavicencio");
+}};
     private JLabel lblEstado;
     
     private int dragStartX, dragStartY;
@@ -87,25 +105,33 @@ public class PanelGrafo extends JPanel {
         JOptionPane.showMessageDialog(this, "Nodo origen no encontrado."); return;
     }
 
-    String[] destinos = destinosId.toArray(new String[0]);
-    String destinoId = (String) JOptionPane.showInputDialog(this,
+    String[] nombresArray = destinosId.stream()
+    .map(id -> nombresCiudades.getOrDefault(id, id))
+    .toArray(String[]::new);
+
+    String destinoNombre = (String) JOptionPane.showInputDialog(this,
         "Nodo DESTINO:", "Dijkstra", JOptionPane.PLAIN_MESSAGE,
-        null, destinos, destinos[0]);
-    if(destinoId == null) return;
+        null, nombresArray, nombresArray[0]);
+    if(destinoNombre == null) return;
+
+    String destinoId = nombresCiudades.entrySet().stream()
+        .filter(e -> e.getValue().equals(destinoNombre))
+        .map(Map.Entry::getKey)
+        .findFirst().orElse(destinoNombre);
 
     Nodo destino = buscarPorId(destinoId);
 
     Dijkstra.ejecutar(grafo, origen, destino);
     caminoDijkstra = Dijkstra.camino;
     distanciaTotal = Dijkstra.distancias.get(destino);
-    modoActual     = "DIJKSTRA";
+    modoActual     = "RUTACORTA";
 
     if(caminoDijkstra.size() <= 1) {
         JOptionPane.showMessageDialog(this, "No existe camino.");
         caminoDijkstra = null;
     }
 
-    panelTabla.mostrarDijkstra(Dijkstra.distancias, Dijkstra.anteriores, caminoDijkstra);
+    panelTabla.mostrarRuta(Dijkstra.distancias, Dijkstra.anteriores, caminoDijkstra, "Dijkstra");
     repaint();
     
     if(lblEstado != null)
@@ -131,6 +157,53 @@ public class PanelGrafo extends JPanel {
             lblEstado.setText("Kruskal — Peso total: " + Kruskal.pesoTotal);
     }
 
+    public void ejecutarAStar(PanelTabla panelTabla) {
+    limpiar();
+    List<Nodo> nodos = grafo.getNodos();
+    if (nodos.size() < 2) {
+        JOptionPane.showMessageDialog(this, "Necesitas al menos 2 nodos."); return;
+    }
+
+    Nodo origen = buscarPorId(origenId);
+    if(origen == null) {
+        JOptionPane.showMessageDialog(this, "Nodo origen no encontrado."); return;
+    }
+
+    String[] nombresArray = destinosId.stream()
+    .map(id -> nombresCiudades.getOrDefault(id, id))
+    .toArray(String[]::new);
+
+    String destinoNombre = (String) JOptionPane.showInputDialog(this,
+        "Nodo DESTINO:", "Dijkstra", JOptionPane.PLAIN_MESSAGE,
+        null, nombresArray, nombresArray[0]);
+    if(destinoNombre == null) return;
+
+    String destinoId = nombresCiudades.entrySet().stream()
+        .filter(e -> e.getValue().equals(destinoNombre))
+        .map(Map.Entry::getKey)
+        .findFirst().orElse(destinoNombre);
+
+    Nodo destino = buscarPorId(destinoId);
+    AStar.ejecutar(grafo, origen, destino);
+    caminoDijkstra = AStar.camino;
+    distanciaTotal = AStar.costoTotal;
+    modoActual = "RUTACORTA";
+
+    if(caminoDijkstra.size() <= 1) {
+        JOptionPane.showMessageDialog(this, "No existe camino.");
+        caminoDijkstra = null;
+    }
+
+    panelTabla.mostrarRuta(AStar.distancias, AStar.anteriores, AStar.camino, "A*");
+    repaint();
+
+    if(lblEstado != null)
+        lblEstado.setText("Camino: " + caminoDijkstra.stream()
+            .map(Nodo::getId)
+            .reduce((a,b) -> a + " → " + b).orElse("") +
+            "   |   Distancia: " + distanciaTotal);
+}
+
     private void animarKruskal() {
         aristasAnimadas = 0;
         timerAnimacion  = new Timer(25, null);
@@ -146,10 +219,8 @@ public class PanelGrafo extends JPanel {
     public void limpiar() {
         if (timerAnimacion != null) timerAnimacion.stop();
         caminoDijkstra  = null;
-        ordenRecorrido  = null;
         aristasKruskal  = null;
         aristasAnimadas = 0;
-        nodoAnimado     = -1;
         modoActual      = "";
         repaint();
     }
@@ -270,7 +341,7 @@ public class PanelGrafo extends JPanel {
             }
 
             switch (modoActual) {
-                case "DIJKSTRA":
+                case "RUTACORTA":
                     if (caminoDijkstra != null) {
                         if (n == caminoDijkstra.get(0))
                             relleno = new Color(34, 180, 90);

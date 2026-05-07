@@ -18,7 +18,7 @@ public class PanelTabla extends JPanel {
 
     private JTable tabla;
     private DefaultTableModel modelo;
-    private JLabel lblTitulo;
+    JLabel lblTitulo;
 
     public PanelTabla() {
         setLayout(new BorderLayout(0, 10));
@@ -44,9 +44,12 @@ public class PanelTabla extends JPanel {
     }
 
     // Muestra tabla de distancias Dijkstra
-    public void mostrarDijkstra(Map<Nodo, Integer> distancias,
+    public void mostrarRuta(Map<Nodo, Integer> distancias,
                                  Map<Nodo, Nodo> anteriores,
-                                 List<Nodo> camino) {
+                                 List<Nodo> camino,
+                                 String algoritmo) {
+
+        lblTitulo.setText(algoritmo + " — Tabla de distancias mínimas y nodos anteriores");
         modelo.setRowCount(0);
         modelo.setColumnCount(0);
         modelo.addColumn("Nodo");
@@ -54,7 +57,6 @@ public class PanelTabla extends JPanel {
         modelo.addColumn("Nodo anterior");
         modelo.addColumn("¿En camino óptimo?");
 
-        lblTitulo.setText("Dijkstra — Tabla de distancias mínimas");
 
         for (Map.Entry<Nodo, Integer> e : distancias.entrySet()) {
             Nodo n        = e.getKey();

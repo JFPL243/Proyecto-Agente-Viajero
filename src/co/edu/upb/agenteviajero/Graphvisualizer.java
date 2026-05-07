@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class Graphvisualizer extends JFrame{
 
 	public Graphvisualizer() {
-	    setTitle("Grafo — Dijkstra");
+	    setTitle("Agente Viajero - Visualizador de Grafos");
 	    setExtendedState(JFrame.MAXIMIZED_BOTH);
 	    setLocationRelativeTo(null);
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,24 +32,27 @@ public class Graphvisualizer extends JFrame{
 
 	    JTabbedPane tabs = new JTabbedPane();
 	    tabs.addTab("Grafo",    panelGrafo);
-	    tabs.addTab("Dijkstra", panelDijkstra);
+	    tabs.addTab("Tabla", panelDijkstra);
 	    tabs.addTab("Kruskal",  panelKruskal);
 	    tabs.addTab("Matriz", panelMatriz);
 
 	    JButton btnDijkstra = crearBoton("Dijkstra", new Color(34, 150, 80));
 	    JButton btnKruskal  = crearBoton("Kruskal",  new Color(130, 40, 180));
-	    
+	    JButton btnAStar = crearBoton("A*", new Color(200, 80, 20));
+
+
 	    
 	    
 	    btnDijkstra.addActionListener(e -> panelGrafo.ejecutarDijkstra(panelDijkstra));
 	    btnKruskal.addActionListener(e  -> panelGrafo.ejecutarKruskal(panelKruskal));
+		btnAStar.addActionListener(e -> panelGrafo.ejecutarAStar(panelDijkstra));
 
 	    JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 6));
 	    
 	    barra.setBackground(new Color(240, 240, 245));
 	    barra.add(btnDijkstra);
 	    barra.add(btnKruskal);
-	    
+	    barra.add(btnAStar);
 	    
 	    JLabel lblEstado = new JLabel("Origen: C9  |  Selecciona destino con ▶ Dijkstra");
 	    lblEstado.setFont(new Font("Arial", Font.PLAIN, 12));
